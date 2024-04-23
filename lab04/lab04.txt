@@ -1,0 +1,119 @@
+class Node:
+    def __init__(self, data=None):
+        self.data = data
+        self.next = None
+        self.prev = None
+
+class DoublyLinkedList:
+    def __init__(self):
+        self.head = Node()
+        self.tail = Node()
+        self.head.next = self.tail
+        self.tail.prev = self.head
+        self.head.prev = self.tail#tworzy cykliczność
+        self.tail.next = self.head#tworzy cykliczność
+
+    def wstaw(self, s):
+        node = Node(s)
+        node.next = self.head.next
+        node.prev = self.head
+        self.head.next.prev = node
+        self.head.next = node
+
+    def drukuj(self):
+        node = self.head.next
+        while node != self.tail:
+            print(node.data)
+            node = node.next
+
+    def szukaj(self, s):
+        node = self.head.next
+        while node != self.tail:
+            if node.data == s:
+                return node
+            node = node.next
+        return None
+
+    def usun(self, s):
+        node = self.szukaj(s)
+        if node:
+            node.prev.next = node.next
+            node.next.prev = node.prev
+
+    def bezpowtorzen(self):
+        new_list = DoublyLinkedList()
+        words = set()#pusty zbior dla sprawdzenia czy słowo już było w liście czy nie
+        node = self.head.next
+        while node != self.tail:
+            if node.data not in words:
+                new_list.wstaw(node.data)
+                words.add(node.data)
+            node = node.next
+        return new_list
+
+    def scal(self, L2):
+        new_list = DoublyLinkedList()
+        node = self.head.next
+        while node != self.tail:
+            new_list.wstaw(node.data)
+            node = node.next
+
+        node = L2.head.next
+        while node != L2.tail:
+            new_list.wstaw(node.data)
+            node = node.next
+        return new_list
+
+l=DoublyLinkedList()
+l.wstaw('slowoPierwsze')
+l.wstaw('slowoDrugie')
+l.wstaw('slowoTrzecie')
+print('lista wygląda:')
+l.drukuj()
+
+#szukanie słowa pozytywny wynik
+print()
+if l.szukaj('slowoDrugie'):
+    print('słowo znalezione')
+else:
+    print('niestety slowo nie znalezione')
+
+l.usun('slowoDrugie')#usuwanie slowa
+
+#szukanie slowa niegatywny wynik
+print()
+if l.szukaj('slowoDrugie'):
+    print('słowo znalezione')
+else:
+    print('niestety slowo nie znalezione\n')
+
+
+#dodajemy elementy listy
+l.wstaw('slowoPierwsze')
+l.wstaw('slowoTrzecie')
+l.wstaw('slowoNowe')
+#sprawdzamy jak wygląda lista:
+l.drukuj()
+nowaListaUnikalna=l.bezpowtorzen()
+print('\nlista bez powtórzeń: ')
+nowaListaUnikalna.drukuj()
+print('\n sprawdzenie czy lista ma zmiany')
+l.drukuj()
+
+L1=DoublyLinkedList()
+L2=DoublyLinkedList()
+L1.wstaw('slowo1')
+L1.wstaw('slowo2')
+L1.wstaw('slowo3')
+
+L2.wstaw('slowo2')
+L2.wstaw('slowo3')
+L2.wstaw('slowo4')
+
+print('\nL1:')
+L1.drukuj()
+print('\nL2:')
+L2.drukuj()
+L3=L1.scal(L2)
+print('\nL3')
+L3.drukuj()
